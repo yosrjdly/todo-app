@@ -1,7 +1,7 @@
 "use client"
-
 import { useState } from 'react';
 import { SearchIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, XCircleIcon, ArchiveIcon, TrashIcon } from '@heroicons/react/outline';
 
 interface Todo {
   id: number;
@@ -17,6 +17,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false); // State for modal visibility
   const [taskToDelete, setTaskToDelete] = useState<Todo | null>(null); // Task to be deleted
+  const [selectedTodos, setSelectedTodos] = useState<number[]>([]); // Store selected todos
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -54,6 +55,22 @@ export default function Home() {
     setTaskToDelete(null);
   };
 
+  const toggleSelectTodo = (id: number) => {
+    setSelectedTodos(prev =>
+      prev.includes(id) ? prev.filter(todoId => todoId !== id) : [...prev, id]
+    );
+  };
+
+  const archiveSelectedTodos = () => {
+    setTodos(todos.map(todo => (selectedTodos.includes(todo.id) ? { ...todo, archived: true } : todo)));
+    setSelectedTodos([]);
+  };
+
+  const deleteSelectedTodos = () => {
+    setTodos(todos.filter(todo => !selectedTodos.includes(todo.id)));
+    setSelectedTodos([]);
+  };
+
   const filteredTodos = todos.filter(todo => {
     if (filter === 'active') return !todo.done && !todo.archived;
     if (filter === 'done') return todo.done && !todo.archived;
@@ -64,6 +81,14 @@ export default function Home() {
   const searchedTodos = filteredTodos.filter(todo => 
     todo.text.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const selectAllTodos = () => {
+    if (selectedTodos.length === searchedTodos.length) {
+      setSelectedTodos([]);
+    } else {
+      setSelectedTodos(searchedTodos.map(todo => todo.id));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black text-white">
@@ -107,46 +132,30 @@ export default function Home() {
 
         {/* Tabs for filtering TODOs */}
         <div className="flex space-x-4 mb-8 justify-center">
-          <button
-            onClick={() => setFilter('all')}
-            className={`p-2 rounded-full font-semibold transition-all ${
-              filter === 'all'
-                ? 'bg-purple-600 text-white shadow-lg'
-                : 'bg-gray-700 text-yellow-400 hover:bg-purple-600 hover:text-white'
-            }`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setFilter('active')}
-            className={`p-2 rounded-full font-semibold transition-all ${
-              filter === 'active'
-                ? 'bg-purple-600 text-white shadow-lg'
-                : 'bg-gray-700 text-yellow-400 hover:bg-purple-600 hover:text-white'
-            }`}
-          >
-            Active
-          </button>
-          <button
-            onClick={() => setFilter('done')}
-            className={`p-2 rounded-full font-semibold transition-all ${
-              filter === 'done'
-                ? 'bg-purple-600 text-white shadow-lg'
-                : 'bg-gray-700 text-yellow-400 hover:bg-purple-600 hover:text-white'
-            }`}
-          >
-            Done
-          </button>
-          <button
-            onClick={() => setFilter('archived')}
-            className={`p-2 rounded-full font-semibold transition-all ${
-              filter === 'archived'
-                ? 'bg-purple-600 text-white shadow-lg'
-                : 'bg-gray-700 text-yellow-400 hover:bg-purple-600 hover:text-white'
-            }`}
-          >
-            Archived
-          </button>
+          {['all', 'active', 'done', 'archived'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setFilter(tab as typeof filter)}
+              className={`p-2 rounded-full font-semibold transition-all ${
+                filter === tab
+                  ? 'bg-purple-600 text-white shadow-lg'
+                  : 'bg-gray-700 text-yellow-400 hover:bg-purple-600 hover:text-white'
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Select All Checkbox */}
+        <div className="flex items-center mb-4">
+          <input
+            type="checkbox"
+            checked={selectedTodos.length === searchedTodos.length}
+            onChange={selectAllTodos}
+            className="mr-2 h-5 w-5 text-purple-600 rounded focus:ring-purple-500"
+          />
+          <span className="text-gray-300">Select All</span>
         </div>
 
         {/* Task list */}
@@ -159,14 +168,16 @@ export default function Home() {
               } hover:shadow-2xl transform hover:scale-105`}
             >
               <div className="flex items-center space-x-4">
+                <input
+                  type="checkbox"
+                  checked={selectedTodos.includes(todo.id)}
+                  onChange={() => toggleSelectTodo(todo.id)}
+                  className="mr-2 h-5 w-5 text-purple-600 rounded focus:ring-purple-500"
+                />
                 {todo.done ? (
-                  <span className="bg-green-500 text-black px-2 py-1 rounded-full text-sm">
-                    Done
-                  </span>
+                  <CheckCircleIcon className="w-6 h-6 text-green-500" />
                 ) : (
-                  <span className="bg-yellow-400 text-black px-2 py-1 rounded-full text-sm">
-                    Active
-                  </span>
+                  <XCircleIcon className="w-6 h-6 text-yellow-400" />
                 )}
                 <span className={`flex-1 ${todo.done ? 'line-through' : ''}`}>
                   {todo.text}
@@ -175,55 +186,76 @@ export default function Home() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => toggleDone(todo.id)}
-                  className="text-green-400 hover:text-green-500 transition-all"
+                  className="text-green-400 hover:text-green-500 transition-all flex items-center"
                 >
-                  {todo.done ? 'Undo' : 'Mark as Done'}
+                  <CheckCircleIcon className="w-5 h-5 mr-1" />
+                  {todo.done ? 'Undo' : 'Done'}
                 </button>
                 {!todo.archived && (
                   <button
                     onClick={() => archiveTodo(todo.id)}
-                    className="text-purple-400 hover:text-purple-500 transition-all"
+                    className="text-blue-400 hover:text-blue-500 transition-all flex items-center"
                   >
+                    <ArchiveIcon className="w-5 h-5 mr-1" />
                     Archive
                   </button>
                 )}
                 <button
-                  onClick={() => confirmDelete(todo)} // Trigger the modal
-                  className="text-red-400 hover:text-red-500 transition-all"
+                  onClick={() => confirmDelete(todo)}
+                  className="text-red-400 hover:text-red-500 transition-all flex items-center"
                 >
+                  <TrashIcon className="w-5 h-5 mr-1" />
                   Delete
                 </button>
               </div>
             </li>
           ))}
         </ul>
-      </div>
 
-      {/* Modal for Confirming Deletion */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
-            <h2 className="text-2xl font-bold text-yellow-400">Confirm Deletion</h2>
-            <p className="text-gray-300">
-              Are you sure you want to delete the task "{taskToDelete?.text}"?
-            </p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={cancelDelete}
-                className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={deleteTodo}
-                className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
-              >
-                Delete
-              </button>
+        {/* Archive/Delete Selected Buttons */}
+        <div className="mt-4 flex space-x-4">
+          <button
+            onClick={archiveSelectedTodos}
+            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all flex items-center"
+            disabled={selectedTodos.length === 0}
+          >
+            <ArchiveIcon className="w-5 h-5 mr-1" />
+            Archive Selected
+          </button>
+          <button
+            onClick={deleteSelectedTodos}
+            className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-all flex items-center"
+            disabled={selectedTodos.length === 0}
+          >
+            <TrashIcon className="w-5 h-5 mr-1" />
+            Delete Selected
+          </button>
+        </div>
+
+        {/* Confirmation Modal for Deletion */}
+        {showModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-gray-800 p-8 rounded-lg shadow-lg">
+              <h2 className="text-xl font-bold text-white mb-4">Confirm Deletion</h2>
+              <p className="text-gray-300">Are you sure you want to delete this task?</p>
+              <div className="flex justify-end mt-6 space-x-4">
+                <button
+                  onClick={cancelDelete}
+                  className="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={deleteTodo}
+                  className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
