@@ -216,7 +216,7 @@ export default function Home() {
         <div className="mt-4 flex space-x-4">
           <button
             onClick={archiveSelectedTodos}
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all flex items-center"
+            className="flex items-center justify-center bg-gradient-to-r from-blue-400 to-blue-600 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
             disabled={selectedTodos.length === 0}
           >
             <ArchiveIcon className="w-5 h-5 mr-1" />
@@ -224,7 +224,7 @@ export default function Home() {
           </button>
           <button
             onClick={deleteSelectedTodos}
-            className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-all flex items-center"
+            className="flex items-center justify-center bg-gradient-to-r from-red-400 to-red-600 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-gradient-to-r hover:from-red-500 hover:to-red-700 transition-all duration-300 transform hover:scale-105"
             disabled={selectedTodos.length === 0}
           >
             <TrashIcon className="w-5 h-5 mr-1" />

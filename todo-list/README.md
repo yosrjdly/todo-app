@@ -1,36 +1,128 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Todo App
 
-First, run the development server:
+This is a fully-featured **To-Do List Application** built using **Next.js**, **TypeScript**, and **Tailwind CSS**. The app allows users to add, mark, search, filter, archive, and delete todos. It also includes features for bulk actions and confirmation modals for deletion.
+
+## Features
+
+- **Add a New Todo**: Easily add new tasks using an input field.
+- **Mark Todo as Done**: Mark tasks as complete with just a click.
+- **Edit/Delete Todos**: Update or remove todos.
+- **Archive Todo**: Archive completed or unnecessary tasks.
+- **Tab Navigation**: Switch between active, done, and archived todos.
+- **Multi-Select**: Select multiple todos for bulk archiving or deleting.
+- **Color Differentiation**: Done todos are visually distinct from active todos.
+- **Select All**: A toggle to select all todos for bulk actions.
+- **Search Bar**: Search through todos with filters for done, active, or archived tasks.
+- **Confirmation Modal**: Displays a modal before deleting todos to avoid accidental deletions.
+
+## Tech Stack
+
+- **Next.js**: The React framework for production-grade apps.
+- **TypeScript**: Strongly typed JavaScript for better code quality and readability.
+- **Tailwind CSS**: Utility-first CSS for fast and responsive UI styling.
+- **Local State Management**: Managed with React's `useState`.
+
+## Project Structure
+
+Since the app is small, it is structured in a simple manner without decomposition into multiple components:
+
+
+
+
+## Screenshots
+
+<img src="/todo-list/screenshot.png" alt="Todo App Screenshot" width="700">
+
+## Installation
+
+### Prerequisites
+
+- **Node.js**: Make sure you have Node.js installed (>=16.x.x).
+- **npm** or **yarn**: Ensure npm or yarn is installed globally.
+
+### Getting Started
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/yourusername/todo-app.git
+   ```
+
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd todo-app
+   ```
+
+3. **Install dependencies**:
+
+   Using npm:
+
+   ```bash
+   npm install
+   ```
+
+   Using yarn:
+
+   ```bash
+   yarn install
+   ```
+
+### Running the App
+
+To run the application in development mode:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+or
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This will start the development server at `http://localhost:3000`.
 
-## Learn More
+### Building for Production
 
-To learn more about Next.js, take a look at the following resources:
+To build the application for production:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+or
 
-## Deploy on Vercel
+```bash
+yarn build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This will create an optimized build in the `.next` folder, which can be deployed.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Features Walkthrough
+
+- **Add Todos**: Use the input field to add tasks and press `add`.
+- **Mark Todos as Done**: Click the checkbox next to a todo to mark it as done.
+- **Edit/Delete Todos**: Click the "edit" or "delete" icon on each todo to modify or remove it.
+- **Archive Todo**: Archive done or unnecessary todos for better organization.
+- **Tab Navigation**: Easily switch between active, done, and archived todos using the tab component.
+- **Multi-Select**: Select multiple todos for bulk actions with checkboxes.
+- **Search Bar**: Use the search bar to filter todos based on text content.
+- **Delete Confirmation Modal**: Confirm the deletion of todos with a pop-up modal.
+
+## Customization
+
+You can easily modify the app:
+
+- **Styling**: The app uses **Tailwind CSS** for styling. Adjust the classes in `index.tsx` to change the look and feel.
+- **State Management**: The current app uses React's `useState` for state.
+
+## Best Practices Followed
+
+- **Single-File Structure**: Due to the small size of the app, all logic is consolidated into `page.tsx`. This avoids unnecessary component decomposition.
+- **TypeScript**: The app is strongly typed using TypeScript to catch errors early and improve code readability.
+- **Responsive Design**: Tailwind CSS ensures a mobile-friendly, responsive layout.
+
+
